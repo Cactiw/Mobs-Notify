@@ -17,6 +17,7 @@ def add_mob():
     js = request.get_json()
     if js is None:
         abort(400)
+    js = json.loads(js)
     print(js)
     mobs_queue.put(js)
     return json.dumps({"code": 200, "OK": True}, ensure_ascii=False)
