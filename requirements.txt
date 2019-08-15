@@ -1,0 +1,7 @@
+flask
+flask-cors
+gunicorn
+python-telegram-bot
+pySocks
+pytz
+tzlocal
