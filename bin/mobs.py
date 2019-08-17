@@ -83,7 +83,7 @@ def get_mobs_text_and_buttons(link, castle, mobs, lvls, forward_message_date, bu
 
     now = datetime.datetime.now(tz=moscow_tz).replace(tzinfo=None)
     remaining_time = datetime.timedelta(minutes=3) - (now - forward_message_date)
-    response += "\nСредний уровень: {}\n".format(avg_lvl)
+    response += "\nСредний уровень: {:.1f}\n".format(avg_lvl)
     if remaining_time < datetime.timedelta(0):
         response += "\nВремени не осталось!"
     else:
