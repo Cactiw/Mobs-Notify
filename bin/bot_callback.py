@@ -68,7 +68,20 @@ def selected_lvls(bot, update, user_data):
 
 def info(bot, update):
     mes = update.message
-    pass
+    response = "ℹ️ Инфо:\n"
+    request = "select castle, lvl_min, lvl_max, active from players where id = %s limit 1"
+    cursor.execute(request, (mes.from_user.id,))
+    row = cursor.fetchone()
+    if row is None:
+        bot.send_message(chat_id=mes.chat_id, text="Произошла ошибка. Попробуйте начать снова (/start)")
+        return
+    castle, lvl_min, lvl_max, active = row
+    response += "💬Статус: <b>{}</b>\n".format("✅ Активно" if active else "❌ Отключено")
+    response += "🏰Замок: {}\n".format(castle)
+    response += "🏅Диапазон уровней: <b>{}</b> - <b>{}</b>\n".format(lvl_min, lvl_max)
+    response += "\n↔️Изменить данные: /start\n"
+    response += "🔺Включить: /on\n" if not active else "🔻Отключить: /off"
+    bot.send_message(chat_id=mes.chat_id, text=response, parse_mode='HTML')
 
 
 

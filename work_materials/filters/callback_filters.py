@@ -29,3 +29,11 @@ class FilterSelectLvls(BaseFilter):
 
 
 filter_select_lvls = FilterSelectLvls()
+
+
+class FilterInfo(BaseFilter):
+    def filter(self, message):
+        return filter_is_pm(message) and message.text == "ℹ️ Инфо"
+
+
+filter_info = FilterInfo()
