@@ -61,7 +61,10 @@ def selected_lvls(bot, update, user_data):
     request = "insert into players(id, username, castle, lvl_min, lvl_max) values (%s, %s, %s, %s, %s)"
     try:
         cursor.execute(request, (mes.from_user.id, mes.from_user.username, castle, lvl_min, lvl_max))
-        bot.send_message(chat_id=mes.chat_id, text="Успешно сохранено! Вы подписались на рассылку.",
+        bot.send_message(chat_id=mes.chat_id,
+                         text="Успешно сохранено! Вы подписались на рассылку.\n"
+                              "Теперь вам будут приходить уведомления о мобах из {} со среднем уровнем в диапазоне "
+                              "{} - {}".format(castle, lvl_min, lvl_max),
                          reply_markup=reply_markup)
     except psycopg2.IntegrityError:
         request = "update players set username = %s, castle = %s, lvl_min = %s, lvl_max = %s where id = %s"
