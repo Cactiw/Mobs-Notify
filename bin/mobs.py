@@ -26,7 +26,9 @@ def mobs_monitor():
             link = re.search("/fight_(.*)$", text)
             if link is None:
                 logging.error("No link found: {}".format(data))
-                return
+                data = mobs_queue.get()
+                logging.info("Got {} from queue".format(data))
+                continue
             link = link.group(1)
             names, lvls, buffs = [], [], []
             for string in text.splitlines():
@@ -49,7 +51,9 @@ def mobs_monitor():
                 cursor.execute(request, (link, castle, names, lvls, forward_message_date, player_id, buffs))
             except psycopg2.IntegrityError:
                 logging.error("Repeating notification for data: {}".format(data))
-                return
+                data = mobs_queue.get()
+                logging.info("Got {} from queue".format(data))
+                continue
             response, buttons, avg_lvl = get_mobs_text_and_buttons(link, castle, names, lvls, forward_message_date,
                                                                    buffs)
             request = "select id from players where active = true and castle = %s and %s between lvl_min and lvl_max"
