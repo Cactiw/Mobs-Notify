@@ -53,6 +53,10 @@ def selected_lvls(bot, update, user_data):
         return
     lvl_min = int(parse.group(1))
     lvl_max = int(parse.group(2))
+    if lvl_min < 0 or lvl_max < lvl_min:
+        bot.send_message(chat_id=mes.chat_id, text="Неверный синтаксис. Уровни должны быть положительными, "
+                                                   "второе число не меньше первого ")
+        return
     reply_markup = get_general_buttons(user_data)
     request = "insert into players(id, username, castle, lvl_min, lvl_max) values (%s, %s, %s, %s, %s)"
     try:
