@@ -21,8 +21,6 @@ def start(bot, update, user_data):
         [
             KeyboardButton(text='🦇'),
             KeyboardButton(text='☘'),
-        ],
-        [
             KeyboardButton(text='🍆'),
             KeyboardButton(text='🌹'),
             KeyboardButton(text='🍁'),
