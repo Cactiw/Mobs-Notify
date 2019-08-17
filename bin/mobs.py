@@ -42,14 +42,15 @@ def mobs_monitor():
                         buff = parse.group(1)
                         buffs.pop()
                         buffs.append(buff)
-            request = "insert into mobs(link, mob_names, mob_lvls, date_created, created_player, buffs) values (" \
-                      "%s, %s, %s, %s, %s, %s)"
+            request = "insert into mobs(link, castle, mob_names, mob_lvls, date_created, created_player, buffs) " \
+                      "values (%s, %s, %s, %s, %s, %s, %s)"
             try:
-                cursor.execute(request, (link, names, lvls, forward_message_date, player_id, buffs))
+                cursor.execute(request, (link, castle, names, lvls, forward_message_date, player_id, buffs))
             except psycopg2.IntegrityError:
                 logging.error("Repeating notification for data: {}".format(data))
                 return
-            response, buttons, avg_lvl = get_mobs_text_and_buttons(link, names, lvls, forward_message_date, buffs)
+            response, buttons, avg_lvl = get_mobs_text_and_buttons(link, castle, names, lvls, forward_message_date,
+                                                                   buffs)
             request = "select id from players where active = true and castle = %s and %s between lvl_min and lvl_max"
             cursor.execute(request, (castle, avg_lvl))
             rows = cursor.fetchall()
@@ -64,8 +65,8 @@ def mobs_monitor():
         data = mobs_queue.get()
 
 
-def get_mobs_text_and_buttons(link, mobs, lvls, forward_message_date, buffs):
-    response = "Обнаруженные мобы:\n"
+def get_mobs_text_and_buttons(link, castle, mobs, lvls, forward_message_date, buffs):
+    response = "{} Обнаруженные мобы:\n".format(castle)
     avg_lvl = 0
     for i, name in enumerate(mobs):
         lvl = lvls[i]
@@ -76,6 +77,7 @@ def get_mobs_text_and_buttons(link, mobs, lvls, forward_message_date, buffs):
 
     now = datetime.datetime.now(tz=moscow_tz).replace(tzinfo=None)
     remaining_time = datetime.timedelta(minutes=3) - (now - forward_message_date)
+    response += "\nСредний уровень: {}\n".format(avg_lvl)
     if remaining_time < datetime.timedelta(0):
         response += "\nВремени не осталось!"
     else:
