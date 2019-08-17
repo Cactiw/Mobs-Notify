@@ -18,6 +18,7 @@ def mobs_monitor():
     data = mobs_queue.get()
     while data is not None:
         try:
+            logging.info("Started work with {}".format(data))
             castle, text, player_id, forward_message_date = data.get("castle"), data.get("text"), data.get("telegram_id"), \
                                                             data.get("forward_date")
             forward_message_date = datetime.datetime.fromtimestamp(forward_message_date,
@@ -63,6 +64,7 @@ def mobs_monitor():
             logging.error(traceback.format_exc())
 
         data = mobs_queue.get()
+        logging.info("Got {} from queue".format(data))
 
 
 def get_mobs_text_and_buttons(link, castle, mobs, lvls, forward_message_date, buffs):

@@ -9,6 +9,7 @@ from work_materials.globals import cursor
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 import re
+import psycopg2
 
 
 def start(bot, update, user_data):
@@ -52,12 +53,23 @@ def selected_lvls(bot, update, user_data):
         return
     lvl_min = int(parse.group(1))
     lvl_max = int(parse.group(2))
-    request = "insert into players(id, username, castle, lvl_min, lvl_max) values (%s, %s, %s, %s, %s)"
-    cursor.execute(request, (mes.from_user.id, mes.from_user.username, castle, lvl_min, lvl_max))
-    user_data.pop("status")
     reply_markup = get_general_buttons(user_data)
-    bot.send_message(chat_id=mes.chat_id, text="Успешно сохранено! Вы подписались на рассылку.",
-                     reply_markup=reply_markup)
+    request = "insert into players(id, username, castle, lvl_min, lvl_max) values (%s, %s, %s, %s, %s)"
+    try:
+        cursor.execute(request, (mes.from_user.id, mes.from_user.username, castle, lvl_min, lvl_max))
+        bot.send_message(chat_id=mes.chat_id, text="Успешно сохранено! Вы подписались на рассылку.",
+                         reply_markup=reply_markup)
+    except psycopg2.IntegrityError:
+        request = "update players set username = %s, castle = %s, lvl_min = %s, lvl_max = %s where id = %s"
+        cursor.execute(request, (mes.from_user.username, castle, lvl_min, lvl_max, mes.from_user.id))
+        bot.send_message(chat_id=mes.chat_id, text="Данные обновлены.", reply_markup=reply_markup)
+    user_data.pop("status")
+
+
+def info(bot, update):
+    mes = update.message
+    pass
+
 
 
 
