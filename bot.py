@@ -1,7 +1,7 @@
 from telegram.ext import CommandHandler, MessageHandler, Filters
 
 from bin.save_load_user_data import save_data, load_data
-from bin.bot_callback import start, selected_castle, selected_lvls, info
+from bin.bot_callback import start, selected_castle, selected_lvls, info, change_status
 from bin.mobs import mobs_monitor
 
 from work_materials.filters.general_filters import filter_is_pm
@@ -21,6 +21,9 @@ def bot_processing():
     dispatcher.add_handler(MessageHandler(Filters.text & filter_select_lvls, selected_lvls, pass_user_data=True))
 
     dispatcher.add_handler(MessageHandler(Filters.text & filter_info, info))
+
+    dispatcher.add_handler(CommandHandler('on', change_status, filters=filter_is_pm))
+    dispatcher.add_handler(CommandHandler('off', change_status, filters=filter_is_pm))
 
     load_data()
 

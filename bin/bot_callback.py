@@ -84,5 +84,14 @@ def info(bot, update):
     bot.send_message(chat_id=mes.chat_id, text=response, parse_mode='HTML')
 
 
-
-
+def change_status(bot, update):
+    mes = update.message
+    set_active = 'on' in mes.text
+    request = "update players set active = %s where id = %s"
+    cursor.execute(request, (set_active, mes.from_user.id))
+    if set_active:
+        response = "Готово! Вы снова будете получать уведомления."
+    else:
+        response = "Готово. Вы не будете больше получать уведомления.\n" \
+                   "Снова включить: /on"
+    bot.send_message(chat_id=mes.chat_id, text=response)
