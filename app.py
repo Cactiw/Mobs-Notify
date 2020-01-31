@@ -18,7 +18,10 @@ def add_mob():
     js = request.get_json()
     if js is None:
         abort(400)
-    js = json.loads(js)
+    try:
+        js = json.loads(js)
+    except TypeError:
+        pass
     print(js)
     if js is None:
         logging.error("Js is None")
