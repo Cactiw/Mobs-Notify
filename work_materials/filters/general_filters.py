@@ -3,6 +3,7 @@
 """
 
 from telegram.ext import BaseFilter
+from telegram import Update
 
 from work_materials.globals import CHAT_WARS_ID
 
@@ -17,6 +18,8 @@ filter_is_chat_wars_forward = FilterIsChatWarsForward()
 
 class FilterIsPM(BaseFilter):
     def filter(self, message):
+        if isinstance(message, Update):
+            message = message.message
         if message.from_user is None:
             return False
         return message.chat_id == message.from_user.id
