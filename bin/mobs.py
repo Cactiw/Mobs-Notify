@@ -54,16 +54,19 @@ def mobs_monitor():
                 data = mobs_queue.get()
                 logging.info("Got {} from queue".format(data))
                 continue
-            response, buttons, avg_lvl = get_mobs_text_and_buttons(link, castle, names, lvls, forward_message_date,
-                                                                   buffs)
-            request = "select id from players where active = true and castle = %s and %s between lvl_min and lvl_max"
-            cursor.execute(request, (castle, avg_lvl))
-            rows = cursor.fetchall()
-            count = 0
-            for row in rows:
-                dispatcher.bot.send_message(chat_id=row[0], text=response, parse_mode='HTML', reply_markup=buttons)
-                count += 1
-            logging.info("Sent {} notifications".format(count))
+            response, buttons, avg_lvl, remaining_time = get_mobs_text_and_buttons(link, castle, names, lvls,
+                                                                                   forward_message_date, buffs)
+            if remaining_time < datetime.timedelta(0):
+                logging.info("Time exceeded: {}".format(remaining_time))
+            else:
+                request = "select id from players where active = true and castle = %s and %s between lvl_min and lvl_max"
+                cursor.execute(request, (castle, avg_lvl))
+                rows = cursor.fetchall()
+                count = 0
+                for row in rows:
+                    dispatcher.bot.send_message(chat_id=row[0], text=response, parse_mode='HTML', reply_markup=buttons)
+                    count += 1
+                logging.info("Sent {} notifications".format(count))
         except Exception:
             logging.error(traceback.format_exc())
 
@@ -92,4 +95,4 @@ def get_mobs_text_and_buttons(link, castle, mobs, lvls, forward_message_date, bu
     buttons = [[InlineKeyboardButton(text="⚔ {}-{}🏅".format(int(avg_lvl - 5), int(avg_lvl + 5)),
                                      url=u"https://t.me/share/url?url=/fight_{}".format(link)),
                 ]]
-    return [response, InlineKeyboardMarkup(buttons), avg_lvl]
+    return [response, InlineKeyboardMarkup(buttons), avg_lvl, remaining_time]
