@@ -21,6 +21,8 @@ def mobs_monitor():
             logging.info("Started work with {}".format(data))
             castle, text, player_id, forward_message_date = data.get("castle"), data.get("text"), data.get("telegram_id"), \
                                                             data.get("forward_date")
+            if castle == '☘️':
+                castle = '☘'
             forward_message_date = datetime.datetime.fromtimestamp(forward_message_date,
                                                                    tz=moscow_tz).replace(tzinfo=None)
             link = re.search("/fight_(.*)$", text)
