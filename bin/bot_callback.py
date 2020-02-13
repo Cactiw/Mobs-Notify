@@ -17,10 +17,12 @@ def start(bot, update, user_data):
         [
             KeyboardButton(text='🖤'),
             KeyboardButton(text='🐢'),
-            KeyboardButton(text='🦇'),
         ],
         [
+            KeyboardButton(text='🦇'),
             KeyboardButton(text='☘'),
+        ],
+        [
             KeyboardButton(text='🍆'),
             KeyboardButton(text='🌹'),
             KeyboardButton(text='🍁'),
@@ -29,7 +31,8 @@ def start(bot, update, user_data):
     user_data.update({"status": "selecting_castle"})
     bot.send_message(chat_id=update.message.chat_id,
                      text="Здравствуйте!\nВыберите замок, мобов из которого необходимо присылать.\n\n"
-                          "<em>Обратите внимание, на текущий момент бот работает для 🖤Скалы, 🐢Тортуги и 🦇Ночи.</em>",
+                          "<em>Обратите внимание, на текущий момент бот работает для 🖤Скалы, 🐢Тортуги, 🦇Ночи и "
+                          "(частично) ☘️Оплота.</em>",
                      parse_mode='HTML',
                      reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
 
