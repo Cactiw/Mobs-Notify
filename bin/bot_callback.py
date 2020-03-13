@@ -40,9 +40,12 @@ def start(bot, update, user_data):
 def selected_castle(bot, update, user_data):
     mes = update.message
     user_data.update({"castle": mes.text, "status": "selecting_lvls"})
-    bot.send_message(chat_id=mes.chat_id, text="Замок сохранён.\n"
-                                               "Введите диапазон уровней получаемых мобов\n(синтаксис: MIN-MAX):",
-                     reply_markup=ReplyKeyboardRemove())
+    bot.send_message(chat_id=mes.chat_id,
+                     text="Замок сохранён.\n\nВведите диапазон уровней получаемых мобов. От Вашего уровня примерно "
+                          "+/-5 включительно. Так, например, если Ваш уровень 🏅<code>20</code>, "
+                          "то <code>15</code>-<code>30</code>.\n\n"
+                          "(синтаксис: MIN-MAX):",
+                     reply_markup=ReplyKeyboardRemove(), parse_mode='HTML')
 
 
 def selected_lvls(bot, update, user_data):
